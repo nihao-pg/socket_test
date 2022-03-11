@@ -1,22 +1,22 @@
 package main
 
 import (
-	"net"
 	"flag"
 	"fmt"
 	"io"
+	"net"
 )
 
 var (
-	ServerIp	string
-	ServerPort	int
+	ServerIp   string
+	ServerPort int
 )
 
-
-func main(){
-	flag.StringVar(&ServerIp, "serverIp", "127.0.0.1", "服务端Ip")
+func main() {
+	flag.StringVar(&ServerIp, "serverIp", "127.0.0.1", "服务端Ip") //命令行参数
 	flag.IntVar(&ServerPort, "serverPort", 8080, "服务端端口")
 	flag.Parse()
+	//拼接地址
 	serverAddr := fmt.Sprintf("%s:%d", ServerIp, ServerPort)
 	fmt.Printf("连接至服务器%s\n", serverAddr)
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s", serverAddr))
@@ -26,7 +26,7 @@ func main(){
 	}
 	go func() {
 		buf := make([]byte, 1024)
-		for{
+		for {
 			n, err := conn.Read(buf)
 			if n == 0 {
 				fmt.Println("失去连接")
@@ -36,17 +36,17 @@ func main(){
 			if err != nil && err != io.EOF {
 				fmt.Println("读取异常:", err)
 			}
-			fmt.Println(string(buf[:n - 1]))
+			fmt.Println(string(buf[:n-1]))
 
 		}
-	} ()
+	}()
 	fmt.Println("请输入要发送的内容(输入exit退出):")
 	var msg string
 	_, err = fmt.Scan(&msg)
 	if err != nil {
 		fmt.Println("输入异常:", err)
 	}
-	for msg != "exit"{
+	for msg != "exit" {
 		if err != nil {
 			fmt.Println("输入异常:", err)
 			continue
